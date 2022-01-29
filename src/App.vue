@@ -92,7 +92,7 @@ const keyRows = ref([
             v-for="key of row"
             class="px-4 py-3 bg-gray-600 grid place-items-center cursor-pointer rounded-sm"
             @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
-          >{{ key === 'Backspace' ? '&lt;' : key }}</div>
+          >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
         </div>
       </div>
     </div>
