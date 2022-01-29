@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import words from './words';
 
 const WORD_LENGTH = 5;
 const AVAILABLE_GUESSES = 6;
 
 const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
-const solution = ref('taart');
+const solution = ref(shuffleArray(words)[0].toUpperCase());
 const container = ref<HTMLDivElement | null>(null);
 const foundLetters = ref<string[]>([]);
 const correctLetters = ref<string[]>([]);
 const noneLetters = ref<string[]>([]);
+
+function shuffleArray(array: string[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+
+  return array;
+}
 
 
 window.addEventListener('keydown', function (e) {
@@ -18,6 +30,7 @@ window.addEventListener('keydown', function (e) {
 });
 
 function handleLetterPress(code: string) {
+
   // Backspace
   if (currentGuess.value.length > 0 && code === 'Backspace') {
     currentGuess.value = currentGuess.value.filter((_, idx) => idx !== currentGuess.value.length - 1);
@@ -30,6 +43,10 @@ function handleLetterPress(code: string) {
     )];
 
     currentGuess.value = [];
+    if (guesses.value.length === AVAILABLE_GUESSES) {
+      console.log({ solution: solution.value })
+      return;
+    }
   }
 
   if (currentGuess.value.length >= WORD_LENGTH || !code.startsWith('Key')) {
