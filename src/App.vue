@@ -7,6 +7,7 @@ const AVAILABLE_GUESSES = 3;
 const currentGuess = ref(['B', 'F']);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
+const container = ref<HTMLDivElement|null>(null);
 
 
 window.addEventListener('keydown', function (e) {
@@ -45,7 +46,7 @@ function getColor(key: string, index: number, solution: string) {
 </script>
 
 <template>
-  <div class="mx-auto font-bold">
+  <div class="mx-auto font-bold" ref="container" @click="container?.focus()">
     <div class="flex" v-for="row in AVAILABLE_GUESSES">
       <!-- Past guesses -->
       <div
