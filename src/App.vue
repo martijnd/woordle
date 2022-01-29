@@ -12,7 +12,8 @@ const container = ref<HTMLDivElement | null>(null);
 const foundLetters = ref<string[]>([]);
 const correctLetters = ref<string[]>([]);
 const noneLetters = ref<string[]>([]);
-
+const showSolutionDialog = ref(false);
+console.log(solution.value);
 function shuffleArray(array: string[]) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -42,9 +43,13 @@ function handleLetterPress(code: string) {
       ({ color: getColor(letter, index, solution.value), letter })
     )];
 
+    if (currentGuess.value.join('') === solution.value) {
+      showSolutionDialog.value = true;
+    }
+
     currentGuess.value = [];
     if (guesses.value.length === AVAILABLE_GUESSES) {
-      console.log({ solution: solution.value })
+      showSolutionDialog.value = true;
       return;
     }
   }
@@ -91,9 +96,31 @@ function getKeyBackgroundClass(key: string) {
 
   return 'bg-gray-600';
 }
+
+function onClickPlayAgain() {
+  currentGuess.value = [];
+  guesses.value = [];
+  showSolutionDialog.value = false;
+  foundLetters.value = [];
+  correctLetters.value = [];
+  noneLetters.value = [];
+
+  solution.value = shuffleArray(words)[0].toUpperCase();
+}
 </script>
 
 <template>
+  <div
+    v-if="showSolutionDialog"
+    class="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-black shadow absolute text-center rounded-lg space-y-2"
+  >
+    <h3 class="font-bold text-lg">Woord</h3>
+    <div>{{ solution }}</div>
+    <button
+      class="bg-blue-900 font-bold px-4 py-2 rounded shadow"
+      @click="onClickPlayAgain"
+    >Opnieuw</button>
+  </div>
   <div class="flex flex-col justify-between items-center min-h-screen">
     <div
       class="max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
