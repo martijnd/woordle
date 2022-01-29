@@ -90,7 +90,7 @@ const keyRows = ref([
         <div class="flex justify-center gap-2 m-2" v-for="row of keyRows">
           <div
             v-for="key of row"
-            class="px-4 py-3 bg-gray-600 grid place-items-center cursor-pointer rounded-sm"
+            class="px-3 py-3 bg-gray-600 grid place-items-center cursor-pointer rounded-sm"
             @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
           >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
         </div>
