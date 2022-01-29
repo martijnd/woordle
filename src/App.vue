@@ -2,9 +2,9 @@
 import { ref } from 'vue';
 
 const  WORD_LENGTH = 5;
-const AVAILABLE_GUESSES = 3;
+const AVAILABLE_GUESSES = 6;
 
-const currentGuess = ref(['B', 'F']);
+const currentGuess = ref([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
 const container = ref<HTMLDivElement|null>(null);
