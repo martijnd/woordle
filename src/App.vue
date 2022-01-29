@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import words from './words';
 
 const WORD_LENGTH = 5;
@@ -43,12 +43,18 @@ function handleLetterPress(code: string) {
       ({ color: getColor(letter, index, solution.value), letter })
     )];
 
+    // Lost
     if (currentGuess.value.join('') === solution.value) {
+      localStorage.won = localStorage.won ? parseInt(localStorage.won) + 1 : 1;
+      won.value = localStorage.won || 0;
       showSolutionDialog.value = true;
     }
 
     currentGuess.value = [];
+    // Won
     if (guesses.value.length === AVAILABLE_GUESSES) {
+      localStorage.lost = localStorage.lost ? parseInt(localStorage.lost) + 1 : 1;
+      lost.value = localStorage.lost || 0;
       showSolutionDialog.value = true;
       return;
     }
@@ -107,6 +113,10 @@ function onClickPlayAgain() {
 
   solution.value = shuffleArray(words)[0].toUpperCase();
 }
+
+const won = ref(localStorage.won || 0);
+const lost = ref(localStorage.lost || 0);
+
 </script>
 
 <template>
@@ -116,6 +126,12 @@ function onClickPlayAgain() {
   >
     <h3 class="font-bold text-lg">Woord</h3>
     <div>{{ solution }}</div>
+    <div class="grid grid-cols-2">
+      <span>Gewonnen</span>
+      <span>{{won}}</span>
+      <span>Verloren</span>
+      <span>{{lost}}</span>
+    </div>
     <button
       class="bg-blue-900 font-bold px-4 py-2 rounded shadow"
       @click="onClickPlayAgain"
