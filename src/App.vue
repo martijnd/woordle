@@ -6,12 +6,16 @@ const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
 
 window.addEventListener('keydown', function (e) {
+  // Backspace
+  if (currentGuess.value.length > 0 && e.code === 'Backspace') {
+    currentGuess.value = currentGuess.value.filter((_, idx) => idx !== currentGuess.value.length - 1);
+  }
+
+  // Enter
   if (currentGuess.value.length === 5 && e.code === 'Enter') {
     guesses.value = [...guesses.value, currentGuess.value.map((letter, index) =>
       ({ color: getColor(letter, index, solution.value), letter })
     )];
-
-    console.log(guesses.value);
 
     currentGuess.value = [];
   }
@@ -24,7 +28,6 @@ window.addEventListener('keydown', function (e) {
 });
 
 function getColor(key: string, index: number, solution: string) {
-  console.log(solution, index, key)
   if (solution[index].toUpperCase() === key) {
     return 'bg-green-600';
   }
@@ -40,16 +43,14 @@ function getColor(key: string, index: number, solution: string) {
 <template>
   <div class="mx-auto font-bold">
     <div class="flex" v-for="row in 6">
-    <!-- Past guesses -->
+      <!-- Past guesses -->
       <div
         v-if="guesses.length >= row"
         class="h-12 w-12 border grid place-items-center"
         :class="guesses[row - 1][letter - 1].color"
         v-for="letter in 5"
       >
-        <span
-          v-if="guesses[row - 1]"
-        >{{ guesses[row - 1][letter - 1].letter }}</span>
+        <span v-if="guesses[row - 1]">{{ guesses[row - 1][letter - 1].letter }}</span>
       </div>
       <div
         v-else
