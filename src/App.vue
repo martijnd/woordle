@@ -8,6 +8,9 @@ const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
 const container = ref<HTMLDivElement | null>(null);
+const foundLetters = ref<string[]>([]);
+const correctLetters = ref<string[]>([]);
+const noneLetters = ref<string[]>([]);
 
 
 window.addEventListener('keydown', function (e) {
@@ -38,13 +41,16 @@ function handleLetterPress(code: string) {
 
 function getColor(key: string, index: number, solution: string) {
   if (solution[index].toUpperCase() === key) {
+    correctLetters.value = [...correctLetters.value, key];
     return 'bg-green-600';
   }
 
   if (solution.toUpperCase().split('').includes(key)) {
+    foundLetters.value = [...foundLetters.value, key];
     return 'bg-orange-400';
   }
 
+  noneLetters.value = [...noneLetters.value, key];
   return 'bg-gray-600';
 }
 
@@ -52,48 +58,65 @@ const keyRows = ref([
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',],
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
   ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']]);
+
+function getKeyBackgroundClass(key: string) {
+  if (correctLetters.value.includes(key)) {
+    return 'bg-green-600';
+  }
+
+  if (foundLetters.value.includes(key)) {
+    return 'bg-orange-400';
+  }
+
+  if (noneLetters.value.includes(key)) {
+    return 'bg-gray-800';
+  }
+
+  return 'bg-gray-600';
+}
 </script>
 
 <template>
-    <div class="flex flex-col justify-between items-center min-h-screen">
-      <div
-        class="max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
-        ref="container"
-        @click="container?.focus()"
-      >
-        <div class="flex" v-for="row in AVAILABLE_GUESSES">
-          <!-- Past guesses -->
-          <div
-            v-if="guesses.length >= row"
-            class="h-12 w-12 border border-gray-600 grid place-items-center mx-1"
-            :class="guesses[row - 1][letter - 1].color"
-            v-for="letter in WORD_LENGTH"
-          >
-            <span
-              v-if="guesses[row - 1]"
-              v-text="guesses[row - 1][letter - 1].letter"
-            />
-          </div>
-          <div
-            v-else
-            class="h-12 w-12 border border-gray-600 grid place-items-center  mx-1"
-            v-for="letter in WORD_LENGTH"
-          >
-            <span
-              v-if="row === guesses.length + 1 && currentGuess[letter - 1]"
-              v-text="currentGuess[letter - 1]"
-            />
-          </div>
+  <div class="flex flex-col justify-between items-center min-h-screen">
+    <div
+      class="max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
+      ref="container"
+      @click="container?.focus()"
+    >
+      <div class="flex" v-for="row in AVAILABLE_GUESSES">
+        <!-- Past guesses -->
+        <div
+          v-if="guesses.length >= row"
+          class="h-12 w-12 border border-gray-600 grid place-items-center mx-1"
+          :class="guesses[row - 1][letter - 1].color"
+          v-for="letter in WORD_LENGTH"
+        >
+          <span
+            v-if="guesses[row - 1]"
+            v-text="guesses[row - 1][letter - 1].letter"
+          />
         </div>
-      </div>
-      <div class="w-full text-center max-w-lg font-bold text-sm">
-        <div class="flex justify-center gap-2 m-2" v-for="row of keyRows">
-          <div
-            v-for="key of row"
-            class="px-3 py-3 bg-gray-600 grid place-items-center cursor-pointer rounded-sm"
-            @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
-          >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
+        <div
+          v-else
+          class="h-12 w-12 border border-gray-600 grid place-items-center mx-1"
+          v-for="letter in WORD_LENGTH"
+        >
+          <span
+            v-if="row === guesses.length + 1 && currentGuess[letter - 1]"
+            v-text="currentGuess[letter - 1]"
+          />
         </div>
       </div>
     </div>
+    <div class="w-full text-center max-w-lg font-bold text-sm">
+      <div class="flex justify-center gap-2 m-2" v-for="row of keyRows">
+        <div
+          v-for="key of row"
+          class="px-3 py-3 grid place-items-center cursor-pointer rounded-sm"
+          :class="getKeyBackgroundClass(key)"
+          @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
+        >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
+      </div>
+    </div>
+  </div>
 </template>
