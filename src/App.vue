@@ -55,9 +55,9 @@ const keyRows = ref([
 </script>
 
 <template>
-    <div class="flex flex-col justify-between min-h-screen">
+    <div class="flex flex-col justify-between items-center min-h-screen">
       <div
-        class="mx-auto max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
+        class="max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
         ref="container"
         @click="container?.focus()"
       >
