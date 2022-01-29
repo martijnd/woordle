@@ -4,7 +4,7 @@ import { ref } from 'vue';
 const  WORD_LENGTH = 5;
 const AVAILABLE_GUESSES = 6;
 
-const currentGuess = ref([]);
+const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
 const container = ref<HTMLDivElement|null>(null);
@@ -62,9 +62,12 @@ function getColor(key: string, index: number, solution: string) {
         class="h-12 w-12 border grid place-items-center"
         v-for="letter in WORD_LENGTH"
       >
-        <span
+        <input
+        class="bg-transparent w-3 outline-none cursor-default"
+        readonly
           v-if="row === guesses.length + 1 && currentGuess[letter - 1]"
-        >{{ currentGuess[letter - 1] }}</span>
+          :value="currentGuess[letter - 1]"
+        >
       </div>
     </div>
   </div>
