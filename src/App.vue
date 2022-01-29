@@ -125,11 +125,11 @@ function getKeyBackgroundClass(key: string) {
         </div>
       </div>
     </div>
-    <div class="w-full text-center max-w-lg font-bold text-sm">
-      <div class="flex justify-center gap-2 m-2" v-for="row of keyRows">
+    <div class="w-full text-center max-w-lg font-bold text-xs">
+      <div class="flex justify-center gap-1 m-1" v-for="row of keyRows">
         <div
           v-for="key of row"
-          class="px-3 py-3 grid place-items-center cursor-pointer rounded-sm"
+          class="px-[11px] py-3 grid place-items-center cursor-pointer rounded-sm"
           :class="getKeyBackgroundClass(key)"
           @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
         >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
