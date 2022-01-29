@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+const  WORD_LENGTH = 5;
+const AVAILABLE_GUESSES = 3;
+
 const currentGuess = ref(['B', 'F']);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
+
 
 window.addEventListener('keydown', function (e) {
   // Backspace
@@ -12,7 +16,7 @@ window.addEventListener('keydown', function (e) {
   }
 
   // Enter
-  if (currentGuess.value.length === 5 && e.code === 'Enter') {
+  if (currentGuess.value.length === WORD_LENGTH && e.code === 'Enter') {
     guesses.value = [...guesses.value, currentGuess.value.map((letter, index) =>
       ({ color: getColor(letter, index, solution.value), letter })
     )];
@@ -20,7 +24,7 @@ window.addEventListener('keydown', function (e) {
     currentGuess.value = [];
   }
 
-  if (currentGuess.value.length >= 5 || !e.code.startsWith('Key')) {
+  if (currentGuess.value.length >= WORD_LENGTH || !e.code.startsWith('Key')) {
     return;
   }
 
@@ -42,20 +46,20 @@ function getColor(key: string, index: number, solution: string) {
 
 <template>
   <div class="mx-auto font-bold">
-    <div class="flex" v-for="row in 6">
+    <div class="flex" v-for="row in AVAILABLE_GUESSES">
       <!-- Past guesses -->
       <div
         v-if="guesses.length >= row"
         class="h-12 w-12 border grid place-items-center"
         :class="guesses[row - 1][letter - 1].color"
-        v-for="letter in 5"
+        v-for="letter in WORD_LENGTH"
       >
         <span v-if="guesses[row - 1]">{{ guesses[row - 1][letter - 1].letter }}</span>
       </div>
       <div
         v-else
         class="h-12 w-12 border grid place-items-center"
-        v-for="letter in 5"
+        v-for="letter in WORD_LENGTH"
       >
         <span
           v-if="row === guesses.length + 1 && currentGuess[letter - 1]"
