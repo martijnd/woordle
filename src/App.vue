@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const  WORD_LENGTH = 5;
+const WORD_LENGTH = 5;
 const AVAILABLE_GUESSES = 6;
 
 const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref('taart');
-const container = ref<HTMLDivElement|null>(null);
+const container = ref<HTMLDivElement | null>(null);
 
 
 window.addEventListener('keydown', function (e) {
@@ -63,11 +63,10 @@ function getColor(key: string, index: number, solution: string) {
         v-for="letter in WORD_LENGTH"
       >
         <input
-        class="bg-transparent w-3 outline-none cursor-default"
-        readonly
+          class="bg-transparent w-3 outline-none cursor-default"
           v-if="row === guesses.length + 1 && currentGuess[letter - 1]"
           :value="currentGuess[letter - 1]"
-        >
+        />
       </div>
     </div>
   </div>
