@@ -55,7 +55,11 @@ function getColor(key: string, index: number, solution: string) {
         :class="guesses[row - 1][letter - 1].color"
         v-for="letter in WORD_LENGTH"
       >
-        <span v-if="guesses[row - 1]">{{ guesses[row - 1][letter - 1].letter }}</span>
+        <input
+          class="bg-transparent w-3 outline-none cursor-default"
+          v-if="guesses[row - 1]"
+          :value="guesses[row - 1][letter - 1].letter"
+        />
       </div>
       <div
         v-else
