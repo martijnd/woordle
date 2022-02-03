@@ -432,6 +432,7 @@ export default [
   "helen",
   "helft",
   "helpt",
+  "hekel",
   "hemel",
   "henna",
   "heren",

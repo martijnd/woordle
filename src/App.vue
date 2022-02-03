@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import words from './words';
+import SolutionDialog from './components/SolutionDialog.vue';
+import MessageDialog from './components/MessageDialog.vue';
 
 const WORD_LENGTH = 5;
 const AVAILABLE_GUESSES = 6;
@@ -30,7 +32,7 @@ window.addEventListener('keydown', function (e) {
   handleKeyPress(e.code);
 });
 
-const dialogMessage = ref<string|null>(null);
+const dialogMessage = ref<string | null>(null);
 
 function showMessageDialog(message: string) {
   dialogMessage.value = message;
@@ -50,7 +52,7 @@ function handleKeyPress(code: string) {
   if (currentGuess.value.length === WORD_LENGTH && code === 'Enter') {
     // Check if it is a valid word
     if (!words.includes(currentGuess.value.join('').toLowerCase())) {
-      showMessageDialog('Dat is geen woord, kut!');
+      showMessageDialog('Dat is geen woord...');
       return;
     }
 
@@ -136,35 +138,21 @@ function onClickPlayAgain() {
 
 const won = ref(localStorage.won || 0);
 const lost = ref(localStorage.lost || 0);
-
 </script>
 
 <template>
-  <!-- Solution dialog -->
-  <div
+  <SolutionDialog
     v-if="showSolutionDialog"
-    class="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-black shadow absolute text-center rounded-lg space-y-2"
-  >
-    <h3 class="font-bold text-lg">Woord</h3>
-    <div>{{ solution }}</div>
-    <div class="grid grid-cols-2">
-      <span>Gewonnen</span>
-      <span>{{ won }}</span>
-      <span>Verloren</span>
-      <span>{{ lost }}</span>
-    </div>
-    <button
-      class="bg-blue-900 font-bold px-4 py-2 rounded shadow"
-      @click="onClickPlayAgain"
-    >Opnieuw</button>
-  </div>
+    @play-again="onClickPlayAgain"
+    :won="parseInt(won)"
+    :lost="parseInt(lost)"
+    :solution="solution"
+  />
   <!-- Message dialog -->
-  <div
+  
+  <MessageDialog
     v-if="dialogMessage"
-    class="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-black shadow absolute text-center rounded-lg space-y-2"
-  >
-    <h3 class="font-bold text-lg">{{dialogMessage}}</h3>
-  </div>
+  :message="dialogMessage" />
   <div class="flex flex-col justify-between items-center min-h-screen">
     <header class="text-center mt-4">
       <h1 class="text-slate-300 font-bold text-xl">Woordle</h1>
