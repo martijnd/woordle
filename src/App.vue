@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import words from './words';
+import solutions from './solutions';
 import SolutionDialog from './components/SolutionDialog.vue';
 import MessageDialog from './components/MessageDialog.vue';
 
@@ -9,7 +10,8 @@ const AVAILABLE_GUESSES = 6;
 
 const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
-const solution = ref(shuffleArray(words)[0].toUpperCase());
+const solution = ref(shuffleArray(solutions)[0].toUpperCase());
+console.log(solution.value);
 const container = ref<HTMLDivElement | null>(null);
 const foundLetters = ref<string[]>([]);
 const correctLetters = ref<string[]>([]);
@@ -133,7 +135,7 @@ function onClickPlayAgain() {
   noneLetters.value = [];
   result.value = null;
 
-  solution.value = shuffleArray(words)[0].toUpperCase();
+  solution.value = shuffleArray(solutions)[0].toUpperCase();
 }
 
 const won = ref(localStorage.won || 0);
