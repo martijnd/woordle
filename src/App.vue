@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import words from './words';
 
 const WORD_LENGTH = 5;
@@ -128,9 +128,9 @@ const lost = ref(localStorage.lost || 0);
     <div>{{ solution }}</div>
     <div class="grid grid-cols-2">
       <span>Gewonnen</span>
-      <span>{{won}}</span>
+      <span>{{ won }}</span>
       <span>Verloren</span>
-      <span>{{lost}}</span>
+      <span>{{ lost }}</span>
     </div>
     <button
       class="bg-blue-900 font-bold px-4 py-2 rounded shadow"
@@ -138,6 +138,10 @@ const lost = ref(localStorage.lost || 0);
     >Opnieuw</button>
   </div>
   <div class="flex flex-col justify-between items-center min-h-screen">
+    <header class="text-center mt-4">
+      <h1 class="text-slate-300 font-bold text-xl">Woordle</h1>
+      <h2 class="text-slate-500">Gemaakt door Martijn Dorsman</h2>
+    </header>
     <div
       class="max-w-sm font-bold flex flex-grow flex-col gap-2 justify-center items-center"
       ref="container"
