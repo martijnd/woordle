@@ -13,7 +13,7 @@ const foundLetters = ref<string[]>([]);
 const correctLetters = ref<string[]>([]);
 const noneLetters = ref<string[]>([]);
 const showSolutionDialog = ref(false);
-console.log(solution.value);
+const result = ref<string | null>(null);
 function shuffleArray(array: string[]) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -27,10 +27,19 @@ function shuffleArray(array: string[]) {
 
 
 window.addEventListener('keydown', function (e) {
-  handleLetterPress(e.code);
+  handleKeyPress(e.code);
 });
 
-function handleLetterPress(code: string) {
+const dialogMessage = ref<string|null>(null);
+
+function showMessageDialog(message: string) {
+  dialogMessage.value = message;
+  setTimeout(() => {
+    dialogMessage.value = null;
+  }, 2000)
+}
+
+function handleKeyPress(code: string) {
 
   // Backspace
   if (currentGuess.value.length > 0 && code === 'Backspace') {
@@ -39,20 +48,29 @@ function handleLetterPress(code: string) {
 
   // Enter
   if (currentGuess.value.length === WORD_LENGTH && code === 'Enter') {
+    // Check if it is a valid word
+    if (!words.includes(currentGuess.value.join('').toLowerCase())) {
+      showMessageDialog('Dat is geen woord, kut!');
+      return;
+    }
+
+    // Add to guesses list
     guesses.value = [...guesses.value, currentGuess.value.map((letter, index) =>
       ({ color: getColor(letter, index, solution.value), letter })
     )];
 
-    // Lost
+    // Won
     if (currentGuess.value.join('') === solution.value) {
+      result.value = 'won';
       localStorage.won = localStorage.won ? parseInt(localStorage.won) + 1 : 1;
       won.value = localStorage.won || 0;
       showSolutionDialog.value = true;
     }
 
     currentGuess.value = [];
-    // Won
+    // Lost
     if (guesses.value.length === AVAILABLE_GUESSES) {
+      result.value = 'lost';
       localStorage.lost = localStorage.lost ? parseInt(localStorage.lost) + 1 : 1;
       lost.value = localStorage.lost || 0;
       showSolutionDialog.value = true;
@@ -64,6 +82,7 @@ function handleLetterPress(code: string) {
     return;
   }
 
+  // Letter press
   currentGuess.value = [...currentGuess.value, code[3].toUpperCase()];
 }
 
@@ -110,6 +129,7 @@ function onClickPlayAgain() {
   foundLetters.value = [];
   correctLetters.value = [];
   noneLetters.value = [];
+  result.value = null;
 
   solution.value = shuffleArray(words)[0].toUpperCase();
 }
@@ -120,6 +140,7 @@ const lost = ref(localStorage.lost || 0);
 </script>
 
 <template>
+  <!-- Solution dialog -->
   <div
     v-if="showSolutionDialog"
     class="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-black shadow absolute text-center rounded-lg space-y-2"
@@ -136,6 +157,13 @@ const lost = ref(localStorage.lost || 0);
       class="bg-blue-900 font-bold px-4 py-2 rounded shadow"
       @click="onClickPlayAgain"
     >Opnieuw</button>
+  </div>
+  <!-- Message dialog -->
+  <div
+    v-if="dialogMessage"
+    class="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 bg-black shadow absolute text-center rounded-lg space-y-2"
+  >
+    <h3 class="font-bold text-lg">{{dialogMessage}}</h3>
   </div>
   <div class="flex flex-col justify-between items-center min-h-screen">
     <header class="text-center mt-4">
@@ -178,7 +206,7 @@ const lost = ref(localStorage.lost || 0);
           v-for="key of row"
           class="px-[11px] py-3 grid place-items-center cursor-pointer rounded-sm"
           :class="getKeyBackgroundClass(key)"
-          @click="handleLetterPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
+          @click="handleKeyPress(['Backspace', 'Enter'].includes(key) ? key : `Key${key}`)"
         >{{ key === 'Backspace' ? '&#9003;' : key }}</div>
       </div>
     </div>
