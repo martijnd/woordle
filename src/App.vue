@@ -38,7 +38,7 @@ function showMessageDialog(message: string) {
   dialogMessage.value = message;
   setTimeout(() => {
     dialogMessage.value = null;
-  }, 2000)
+  }, 1000)
 }
 
 function handleKeyPress(code: string) {
