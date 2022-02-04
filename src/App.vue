@@ -11,7 +11,6 @@ const AVAILABLE_GUESSES = 6;
 const currentGuess = ref<string[]>([]);
 const guesses = ref<{ letter: string, color: string }[][]>([]);
 const solution = ref(shuffleArray(solutions)[0].toUpperCase());
-console.log(solution.value);
 const container = ref<HTMLDivElement | null>(null);
 const foundLetters = ref<string[]>([]);
 const correctLetters = ref<string[]>([]);
